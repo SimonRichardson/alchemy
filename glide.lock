@@ -1,0 +1,111 @@
+hash: f98a5413766423e8b420fea2af882d0ba28507e47f23102e107e9dde9c880068
+updated: 2018-03-03T21:53:27.274988818Z
+imports:
+- name: github.com/armon/circbuf
+  version: bbbad097214e2918d8543d5201d12bfd7bca254d
+- name: github.com/armon/go-metrics
+  version: 783273d703149aaeb9897cf58613d5af48861c25
+- name: github.com/armon/go-radix
+  version: 1fca145dffbcaa8fe914309b1ec0cfc67500fe61
+- name: github.com/bgentry/speakeasy
+  version: 4aabc24848ce5fd31929f7d1e4ea74d3709c14cd
+- name: github.com/go-kit/kit
+  version: f81124a627738376188f804818cbc0a9cd20f61e
+  subpackages:
+  - log
+  - log/level
+- name: github.com/go-logfmt/logfmt
+  version: 390ab7935ee28ec6b286364bba9b4dd6410cb3d5
+- name: github.com/go-stack/stack
+  version: 259ab82a6cad3992b4e21ff5cac294ccb06474bc
+- name: github.com/golang/mock
+  version: 58cd061d09382b6011f84c1291ebe50ef2e25bab
+  subpackages:
+  - gomock
+- name: github.com/gorilla/mux
+  version: 07ba1fd60e210dc5cc6f86ec25dc9ecc7c95c295
+- name: github.com/hashicorp/errwrap
+  version: 7554cd9344cec97297fa6649b055a8c98c2a1e55
+- name: github.com/hashicorp/go-immutable-radix
+  version: 7f3cd4390caab3250a57f30efdb2a65dd7649ecf
+- name: github.com/hashicorp/go-msgpack
+  version: fa3f63826f7c23912c15263591e65d54d080b458
+  subpackages:
+  - codec
+- name: github.com/hashicorp/go-multierror
+  version: b7773ae218740a7be65057fc60b366a49b538a44
+- name: github.com/hashicorp/go-sockaddr
+  version: 7165ee14aff120ee3642aa2bcf2dea8eebef29c3
+- name: github.com/hashicorp/go-syslog
+  version: 326bf4a7f709d263f964a6a96558676b103f3534
+- name: github.com/hashicorp/go.net
+  version: 104dcad90073cd8d1e6828b2af19185b60cf3e29
+  subpackages:
+  - internal/iana
+  - ipv4
+  - ipv6
+- name: github.com/hashicorp/golang-lru
+  version: 0fb14efe8c47ae851c0034ed7a448854d3d34cf3
+  subpackages:
+  - simplelru
+- name: github.com/hashicorp/logutils
+  version: 0dc08b1671f34c4250ce212759ebd880f743d883
+- name: github.com/hashicorp/mdns
+  version: 4e527d9d808175f132f949523e640c699e4253bb
+- name: github.com/hashicorp/memberlist
+  version: 2288bf30e9c8d7b5f6549bf62e07120d72fd4b6c
+- name: github.com/hashicorp/serf
+  version: 3b250ce4404edb266330f53fcfc8ad0d0dacfae7
+  subpackages:
+  - cmd/serf/command/agent
+  - coordinate
+  - serf
+- name: github.com/kr/logfmt
+  version: b84e30acd515aadc4b783ad4ff83aff3299bdfe0
+- name: github.com/mattn/go-isatty
+  version: 6ca4dbf54d38eea1a992b3c722a76a5d1c4cb25c
+- name: github.com/miekg/dns
+  version: 906238edc6eb0ddface4a1923f6d41ef2a5ca59b
+- name: github.com/mitchellh/cli
+  version: 518dc677a1e1222682f4e7db06721942cb8e9e4c
+- name: github.com/mitchellh/mapstructure
+  version: 00c29f56e2386353d58c599509e8dc3801b0d716
+- name: github.com/pborman/uuid
+  version: c65b2f87fee37d1c7854c9164a450713c28d50cd
+- name: github.com/pkg/errors
+  version: 30136e27e2ac8d167177e8a583aa4c3fea5be833
+- name: github.com/posener/complete
+  version: cdc49b71388c2ab059f57997ef2575c9e8b4f146
+  subpackages:
+  - cmd
+  - cmd/install
+  - match
+- name: github.com/sean-/seed
+  version: e2103e2c35297fb7e17febb81e49b312087a2372
+- name: github.com/SimonRichardson/flagset
+  version: d8eb0e54974d098768a93de414d268bc2d0a334f
+- name: github.com/SimonRichardson/gexec
+  version: c3f2b6a0a84bbf048eafea7f53c393899492806b
+- name: github.com/SimonRichardson/resilience
+  version: 2ec8da7dcb4ac9f31e2f5d1d3e83a729d7da1e67
+- name: golang.org/x/crypto
+  version: 91a49db82a88618983a78a06c1cbd4e00ab749ab
+  subpackages:
+  - ed25519
+  - ed25519/internal/edwards25519
+- name: golang.org/x/net
+  version: 22ae77b79946ea320088417e4d50825671d82d57
+  subpackages:
+  - bpf
+  - context
+  - internal/iana
+  - internal/socket
+  - ipv4
+  - ipv6
+- name: golang.org/x/sys
+  version: dd2ff4accc098aceecb86b36eaa7829b2a17b1c9
+  subpackages:
+  - unix
+testImports:
+- name: github.com/trussle/uuid
+  version: 23bc856a10519000ea4c17b77520ab48c3d3bbfd
