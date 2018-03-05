@@ -24,8 +24,8 @@ func TestPeerType(t *testing.T) {
 		input, output string
 		valid         bool
 	}{
-		{"store",
-			"store", "store",
+		{"any",
+			"peertype:*", "peertype:*",
 			true,
 		},
 		{"bad",
@@ -239,34 +239,21 @@ func TestPeer(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
-			member := mocks.NewMockMember(ctrl)
-			member.EXPECT().
-				Name().
-				Return(name.String())
-
-			memberList := mocks.NewMockMemberList(ctrl)
-			memberList.EXPECT().
-				LocalNode().
-				Return(member)
-
-			members := mocks.NewMockMembers(ctrl)
-			members.EXPECT().
-				MemberList().
-				Return(memberList)
-			members.EXPECT().
+			mbrs := mocks.NewMockMembers(ctrl)
+			mbrs.EXPECT().
 				Walk(Func(hostStrings)).
 				Return(nil)
 
-			p := NewPeer(members, log.NewNopLogger())
-			got, err := p.Current(PeerTypeStore, false)
+			p := NewPeer(mbrs, log.NewNopLogger())
+			got, err := p.Current(PeerTypeAny)
 
 			if expected, actual := true, err == nil; expected != actual {
 				t.Errorf("expected: %t, actual: %t", expected, actual)
 			}
 
-			want := make([]string, len(hostStrings))
-			for k, v := range hostStrings {
-				want[k] = fmt.Sprintf("%s:%d", v, 8080)
+			want := make(map[members.PeerType][]string)
+			for _, v := range hostStrings {
+				want[PeerTypeAny] = append(want[PeerTypeAny], fmt.Sprintf("%s:%d", v, 8080))
 			}
 
 			return (len(want) == 0 && len(got) == 0) ||
@@ -287,7 +274,7 @@ func (m funcMatcher) Matches(x interface{}) bool {
 	if fn, ok := x.(func(members.PeerInfo) error); ok {
 		for _, v := range m.hosts {
 			if err := fn(members.PeerInfo{
-				Type:    PeerTypeStore,
+				Type:    PeerTypeAny,
 				Name:    uuid.New(),
 				APIAddr: v,
 				APIPort: 8080,

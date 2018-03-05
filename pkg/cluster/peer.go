@@ -3,6 +3,7 @@ package cluster
 import (
 	"net"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/SimonRichardson/discourse/pkg/cluster/members"
@@ -17,19 +18,18 @@ const (
 )
 
 const (
-	// PeerTypeStore serves the store API
-	PeerTypeStore members.PeerType = "store"
+	// PeerTypeAny defines a peer type of any.
+	// It is a wildcard for all peer types in the cluster.
+	PeerTypeAny members.PeerType = "peertype:*"
 )
 
 // ParsePeerType parses a potential peer type and errors out if it's not a known
 // valid type.
 func ParsePeerType(t string) (members.PeerType, error) {
-	switch t {
-	case "store":
+	if strings.HasPrefix(t, "peertype:") {
 		return members.PeerType(t), nil
-	default:
-		return "", errors.Errorf("invalid peer type (%s)", t)
 	}
+	return "", errors.Errorf("invalid peer type %q", t)
 }
 
 // peer represents the node with in the cluster.
@@ -96,21 +96,16 @@ func (p *peer) State() map[string]interface{} {
 	}
 }
 
-// Current API host:ports for the given type of node.
-// IncludeLocal doesn't add the local cluster node to the resulting set.
-func (p *peer) Current(peerType members.PeerType, includeLocal bool) (res []string, err error) {
-	localName := p.Name()
-	err = p.members.Walk(func(info members.PeerInfo) error {
-		if !includeLocal && info.Name == localName {
-			return nil
-		}
-
-		if peerType == PeerTypeStore && info.Type == PeerTypeStore {
-			res = append(res, net.JoinHostPort(info.APIAddr, strconv.Itoa(info.APIPort)))
+// Current API host:ports for the given type of peer.
+func (p *peer) Current(peerType members.PeerType) (map[members.PeerType][]string, error) {
+	res := make(map[members.PeerType][]string)
+	return res, p.members.Walk(func(info members.PeerInfo) error {
+		typ := info.Type
+		if peerType == PeerTypeAny || typ == peerType {
+			res[typ] = append(res[typ], net.JoinHostPort(info.APIAddr, strconv.Itoa(info.APIPort)))
 		}
 		return nil
 	})
-	return
 }
 
 func (p *peer) RegisterEventHandler(fn members.EventHandler) error {

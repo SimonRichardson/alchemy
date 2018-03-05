@@ -12,7 +12,18 @@ import (
 	"github.com/pkg/errors"
 )
 
-var version = "def"
+var version = "dev"
+
+const (
+	defaultAPIPort     = 8080
+	defaultClusterPort = 8079
+	defaultAddr        = "0.0.0.0:0"
+)
+
+var (
+	defaultAPIAddr     = fmt.Sprintf("tcp://0.0.0.0:%d", defaultAPIPort)
+	defaultClusterAddr = fmt.Sprintf("tcp://0.0.0.0:%d", defaultClusterPort)
+)
 
 type command func([]string) error
 
@@ -33,8 +44,8 @@ func main() {
 
 	var cmd command
 	switch strings.ToLower(args[1]) {
-	case "platform":
-		cmd = runPlatform
+	case "sentinel":
+		cmd = runSentinel
 	case "query":
 		cmd = runQuery
 	default:
@@ -50,8 +61,8 @@ func usage() {
 	fmt.Fprintf(os.Stderr, "  %s <mode> [flags]\n", os.Args[0])
 	fmt.Fprintf(os.Stderr, "\n")
 	fmt.Fprintf(os.Stderr, "MODES\n")
-	fmt.Fprintf(os.Stderr, "  platform      Platform service\n")
-	fmt.Fprintf(os.Stderr, "  query			Query service\n")
+	fmt.Fprintf(os.Stderr, "  sentinel      Sentinel service\n")
+	fmt.Fprintf(os.Stderr, "  query         Query service\n")
 	fmt.Fprintf(os.Stderr, "\n")
 	fmt.Fprintf(os.Stderr, "VERSION\n")
 	fmt.Fprintf(os.Stderr, "  %s (%s)\n", version, runtime.Version())

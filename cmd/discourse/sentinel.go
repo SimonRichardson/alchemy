@@ -10,15 +10,20 @@ import (
 	"github.com/go-kit/kit/log/level"
 )
 
-func runPlatform(args []string) error {
-	// flags for the platform command
+func runSentinel(args []string) error {
+	// flags for the sentinel command
 	var (
-		flags = flagset.NewFlagSet("platform", flag.ExitOnError)
+		flags = flagset.NewFlagSet("sentinel", flag.ExitOnError)
 
-		debug = flags.Bool("debug", false, "debug logging")
+		debug                = flags.Bool("debug", false, "debug logging")
+		clusterBindAddr      = flags.String("cluster", defaultClusterAddr, "listen address for cluster")
+		clusterAdvertiseAddr = flags.String("cluster.advertise-addr", "", "optional, explicit address to advertise in cluster")
+
+		clusterPeers stringSlice
 	)
 
-	flags.Usage = usageFor(flags, "platform [flags]")
+	flags.Var(&clusterPeers, "peer", "cluster peer host:port (repeatable)")
+	flags.Usage = usageFor(flags, "sentinel [flags]")
 	if err := flags.Parse(args); err != nil {
 		return nil
 	}

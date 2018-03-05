@@ -30,7 +30,7 @@ type Peer interface {
 
 	// Current API host:ports for the given type of node.
 	// Bool defines if you want to include the current local node.
-	Current(peerType members.PeerType, includeLocal bool) ([]string, error)
+	Current(members.PeerType) (map[members.PeerType][]string, error)
 
 	// Close and shutdown the peer
 	Close()

@@ -68,16 +68,16 @@ func (mr *MockPeerMockRecorder) ClusterSize() *gomock.Call {
 }
 
 // Current mocks base method
-func (m *MockPeer) Current(arg0 members.PeerType, arg1 bool) ([]string, error) {
-	ret := m.ctrl.Call(m, "Current", arg0, arg1)
-	ret0, _ := ret[0].([]string)
+func (m *MockPeer) Current(arg0 members.PeerType) (map[members.PeerType][]string, error) {
+	ret := m.ctrl.Call(m, "Current", arg0)
+	ret0, _ := ret[0].(map[members.PeerType][]string)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Current indicates an expected call of Current
-func (mr *MockPeerMockRecorder) Current(arg0, arg1 interface{}) *gomock.Call {
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Current", reflect.TypeOf((*MockPeer)(nil).Current), arg0, arg1)
+func (mr *MockPeerMockRecorder) Current(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Current", reflect.TypeOf((*MockPeer)(nil).Current), arg0)
 }
 
 // DeregisterEventHandler mocks base method
