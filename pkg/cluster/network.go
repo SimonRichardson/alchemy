@@ -44,7 +44,7 @@ func CalculateHostPorts(bindAddr, advertiseAddr string, defaultClusterPort int, 
 		return res, errors.Wrap(err, "couldn't deduce an advertise IP")
 	}
 
-	if hasNonlocal(clusterPeers) && isUnRoutable(advertiseIP.String()) {
+	if HasNonlocal(clusterPeers) && IsUnRoutable(advertiseIP.String()) {
 		level.Warn(logger).Log("err", "this node advertises itself on an un-routable IP", "ip", advertiseIP.String())
 		level.Warn(logger).Log("err", "this node will be unreachable in the cluster")
 		level.Warn(logger).Log("err", "provide an explicit advertise address as a routable IP address or hostname")
@@ -101,7 +101,7 @@ func ParseAddr(addr string, defaultPort int) (network, address, host string, por
 	return u.Scheme, u.Host, host, port, nil
 }
 
-func hasNonlocal(clusterPeers []string) bool {
+func HasNonlocal(clusterPeers []string) bool {
 	for _, peer := range clusterPeers {
 		if host, _, err := net.SplitHostPort(peer); err == nil {
 			peer = host
@@ -115,7 +115,7 @@ func hasNonlocal(clusterPeers []string) bool {
 	return false
 }
 
-func isUnRoutable(addr string) bool {
+func IsUnRoutable(addr string) bool {
 	if host, _, err := net.SplitHostPort(addr); err == nil {
 		addr = host
 	}

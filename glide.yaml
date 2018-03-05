@@ -4,12 +4,27 @@ import:
   - package: github.com/go-kit/kit
   - package: github.com/go-logfmt/logfmt
   - package: github.com/go-stack/stack
+  - package: github.com/armon/go-metrics
+  - package: github.com/prometheus/prometheus
+  - package: github.com/prometheus/client_golang
+  - package: github.com/beorn7/perks/quantile
+  - package: github.com/golang/protobuf/proto
+  - package: github.com/prometheus/client_model/go
+  - package: github.com/prometheus/common/expfmt
+  - package: github.com/prometheus/common/model
+  - package: github.com/prometheus/procfs
+  - package: github.com/matttproud/golang_protobuf_extensions/pbutil
   - package: github.com/SimonRichardson/gexec
   - package: github.com/SimonRichardson/resilience
   - package: github.com/SimonRichardson/flagset
   - package: github.com/hashicorp/go-sockaddr
   - package: github.com/hashicorp/memberlist
   - package: github.com/hashicorp/serf
+  - package: github.com/hashicorp/go-cleanhttp
+  - package: github.com/armon/circbuf
+  - package: github.com/hashicorp/go-syslog
+  - package: github.com/hashicorp/logutils
+  - package: github.com/hashicorp/mdns
   - package: github.com/gorilla/mux
   - package: github.com/pborman/uuid
   - package: github.com/golang/mock/gomock

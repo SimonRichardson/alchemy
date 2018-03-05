@@ -1,5 +1,5 @@
-hash: 3390d73b91f5472eae7ec0ae506d05360fa663cd33ef758e39ec5b31a26758d1
-updated: 2018-03-05T12:30:41.517455217Z
+hash: f7e8a52ada42c7722cf7ad7be2191b20b88f7f3ff13d22326c143450a0720979
+updated: 2018-03-05T21:09:47.525121722Z
 imports:
 - name: github.com/armon/circbuf
   version: bbbad097214e2918d8543d5201d12bfd7bca254d
@@ -7,6 +7,10 @@ imports:
   version: 783273d703149aaeb9897cf58613d5af48861c25
 - name: github.com/armon/go-radix
   version: 1fca145dffbcaa8fe914309b1ec0cfc67500fe61
+- name: github.com/beorn7/perks
+  version: 4c0e84591b9aa9e6dcfdf3e020114cd81f89d5f9
+  subpackages:
+  - quantile
 - name: github.com/bgentry/speakeasy
   version: 4aabc24848ce5fd31929f7d1e4ea74d3709c14cd
 - name: github.com/go-kit/kit
@@ -22,10 +26,18 @@ imports:
   version: 58cd061d09382b6011f84c1291ebe50ef2e25bab
   subpackages:
   - gomock
+- name: github.com/golang/protobuf
+  version: bbd03ef6da3a115852eaf24c8a1c46aeb39aa175
+  subpackages:
+  - proto
+- name: github.com/gorilla/context
+  version: 08b5f424b9271eedf6f9f0ce86cb9396ed337a42
 - name: github.com/gorilla/mux
   version: 07ba1fd60e210dc5cc6f86ec25dc9ecc7c95c295
 - name: github.com/hashicorp/errwrap
   version: 7554cd9344cec97297fa6649b055a8c98c2a1e55
+- name: github.com/hashicorp/go-cleanhttp
+  version: d5fe4b57a186c716b0e00b8c301cbd9b4182694d
 - name: github.com/hashicorp/go-immutable-radix
   version: 7f3cd4390caab3250a57f30efdb2a65dd7649ecf
 - name: github.com/hashicorp/go-msgpack
@@ -64,6 +76,10 @@ imports:
   version: b84e30acd515aadc4b783ad4ff83aff3299bdfe0
 - name: github.com/mattn/go-isatty
   version: 6ca4dbf54d38eea1a992b3c722a76a5d1c4cb25c
+- name: github.com/matttproud/golang_protobuf_extensions
+  version: c12348ce28de40eed0136aa2b644d0ee0650e56c
+  subpackages:
+  - pbutil
 - name: github.com/miekg/dns
   version: 906238edc6eb0ddface4a1923f6d41ef2a5ca59b
 - name: github.com/mitchellh/cli
@@ -80,8 +96,28 @@ imports:
   - cmd
   - cmd/install
   - match
+- name: github.com/prometheus/client_golang
+  version: c3324c1198cf3374996e9d3098edd46a6b55afc9
+- name: github.com/prometheus/client_model
+  version: 99fa1f4be8e564e8a6b613da7fa6f46c9edafc6c
+  subpackages:
+  - go
+- name: github.com/prometheus/common
+  version: 6fb6fce6f8b75884b92e1889c150403fc0872c5e
+  subpackages:
+  - expfmt
+  - model
+- name: github.com/prometheus/procfs
+  version: d274e363d5759d1c916232217be421f1cc89c5fe
+- name: github.com/prometheus/prometheus
+  version: 86011047ca76a69b5930efe694b1ab45cf4301e9
 - name: github.com/sean-/seed
   version: e2103e2c35297fb7e17febb81e49b312087a2372
+- name: github.com/SimonRichardson/coherence
+  version: 4aff3059fc97e985890c5698d0399879b2340651
+  subpackages:
+  - pkg/cluster
+  - pkg/cluster/members
 - name: github.com/SimonRichardson/flagset
   version: d8eb0e54974d098768a93de414d268bc2d0a334f
 - name: github.com/SimonRichardson/gexec
@@ -108,8 +144,4 @@ imports:
   version: dd2ff4accc098aceecb86b36eaa7829b2a17b1c9
   subpackages:
   - unix
-testImports:
-- name: github.com/trussle/harness
-  version: 2d32c1f9391a2d295c3fb6a769bf18e626251e4b
-  subpackages:
-  - generators
+testImports: []

@@ -5,8 +5,8 @@
 package mocks
 
 import (
-	metrics "github.com/SimonRichardson/discourse/pkg/metrics"
 	gomock "github.com/golang/mock/gomock"
+	prometheus "github.com/prometheus/client_golang/prometheus"
 	reflect "reflect"
 )
 
@@ -77,13 +77,13 @@ func (m *MockHistogramVec) EXPECT() *MockHistogramVecMockRecorder {
 }
 
 // WithLabelValues mocks base method
-func (m *MockHistogramVec) WithLabelValues(arg0 ...string) metrics.Observer {
+func (m *MockHistogramVec) WithLabelValues(arg0 ...string) prometheus.Observer {
 	varargs := []interface{}{}
 	for _, a := range arg0 {
 		varargs = append(varargs, a)
 	}
 	ret := m.ctrl.Call(m, "WithLabelValues", varargs...)
-	ret0, _ := ret[0].(metrics.Observer)
+	ret0, _ := ret[0].(prometheus.Observer)
 	return ret0
 }
 

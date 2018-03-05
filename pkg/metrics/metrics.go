@@ -2,6 +2,8 @@
 
 package metrics
 
+import "github.com/prometheus/client_golang/prometheus"
+
 // Gauge is a Metric that represents a single numerical value that can
 // arbitrarily go up and down.
 //
@@ -30,7 +32,7 @@ type HistogramVec interface {
 	// GetMetricWithLabelValues would have returned an error. By not returning an
 	// error, WithLabelValues allows shortcuts like
 	//     myVec.WithLabelValues("404", "GET").Observe(42.21)
-	WithLabelValues(...string) Observer
+	WithLabelValues(...string) prometheus.Observer
 }
 
 // Counter is a Metric that represents a single numerical value that only ever

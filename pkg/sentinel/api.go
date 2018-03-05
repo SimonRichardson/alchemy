@@ -1,7 +1,9 @@
 package sentinel
 
 import (
+	"encoding/json"
 	"net/http"
+	"net/url"
 	"strconv"
 	"time"
 
@@ -91,8 +93,12 @@ func (a *API) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func (a *API) handleServices(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
+	// useful metrics
+	begin := time.Now()
+
+	// validate input
 	var params ServicesParams
-	if err := params.DecodeFrom(r.Header, mux.Vars(r)); err != nil {
+	if err := params.DecodeFrom(r.Header, r.URL.Query()); err != nil {
 		a.errors.BadRequest(w, r, err.Error())
 		return
 	}
@@ -103,10 +109,19 @@ func (a *API) handleServices(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if list, ok := services[params.Type]; !ok || len(list) == 0 {
-		a.errors.NotFound(w, r)
-		return
+	if params.Type != cluster.PeerTypeAny {
+		if list, ok := services[params.Type]; !ok || len(list) == 0 {
+			a.errors.NotFound(w, r)
+			return
+		}
 	}
+
+	result := ServicesResult{Errors: a.errors, Params: params}
+	result.Services = services
+
+	// Finish
+	result.Duration = time.Since(begin).String()
+	result.EncodeTo(w)
 }
 
 // ServicesParams handles
@@ -115,15 +130,46 @@ type ServicesParams struct {
 }
 
 // DecodeFrom populates a ServicesParams from a Request.
-func (p *ServicesParams) DecodeFrom(headers http.Header, vars map[string]string) (err error) {
+func (p *ServicesParams) DecodeFrom(headers http.Header, values url.Values) (err error) {
 	if accept := headers.Get("Accept"); accept != "" && accept != defaultContentType {
 		return errors.Errorf("expected %q content-type, got %q", defaultContentType, accept)
 	}
 
-	if typ, ok := vars["type"]; !ok || typ == "" {
+	if typ := values.Get("type"); typ == "" {
 		p.Type = cluster.PeerTypeAny
 	} else {
 		p.Type, err = cluster.ParsePeerType(typ)
 	}
 	return
 }
+
+// ServicesResult contains statistics about the services query.
+type ServicesResult struct {
+	Errors   api.Error
+	Params   ServicesParams
+	Duration string
+	Services map[members.PeerType][]string
+}
+
+// EncodeTo encodes the Services to the HTTP response
+// writer.
+func (r *ServicesResult) EncodeTo(w http.ResponseWriter) {
+	headers := w.Header()
+	headers.Set(httpHeaderContentType, defaultContentType)
+	headers.Set(httpHeaderDuration, r.Duration)
+	headers.Set(httpHeaderType, r.Params.Type.String())
+
+	if err := json.NewEncoder(w).Encode(struct {
+		Services map[members.PeerType][]string `json:"services"`
+	}{
+		Services: r.Services,
+	}); err != nil {
+		r.Errors.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
+const (
+	httpHeaderContentType = "Content-Type"
+	httpHeaderDuration    = "X-Duration"
+	httpHeaderType        = "X-Type"
+)

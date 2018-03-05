@@ -112,7 +112,7 @@ func TestHasNonlocal(t *testing.T) {
 		},
 	} {
 		t.Run(testcase.name, func(t *testing.T) {
-			if want, have := testcase.want, hasNonlocal(testcase.input); want != have {
+			if want, have := testcase.want, HasNonlocal(testcase.input); want != have {
 				t.Errorf("want %v, have %v", want, have)
 			}
 		})
@@ -132,7 +132,7 @@ func TestIsUnRoutable(t *testing.T) {
 		{"::", true},
 	} {
 		t.Run(testcase.input, func(t *testing.T) {
-			if want, have := testcase.want, isUnRoutable(testcase.input); want != have {
+			if want, have := testcase.want, IsUnRoutable(testcase.input); want != have {
 				t.Errorf("want %v, have %v", want, have)
 			}
 		})
