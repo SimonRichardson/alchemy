@@ -1,5 +1,5 @@
-hash: f98a5413766423e8b420fea2af882d0ba28507e47f23102e107e9dde9c880068
-updated: 2018-03-03T21:53:27.274988818Z
+hash: 3390d73b91f5472eae7ec0ae506d05360fa663cd33ef758e39ec5b31a26758d1
+updated: 2018-03-05T12:30:41.517455217Z
 imports:
 - name: github.com/armon/circbuf
   version: bbbad097214e2918d8543d5201d12bfd7bca254d
@@ -88,6 +88,8 @@ imports:
   version: c3f2b6a0a84bbf048eafea7f53c393899492806b
 - name: github.com/SimonRichardson/resilience
   version: 2ec8da7dcb4ac9f31e2f5d1d3e83a729d7da1e67
+- name: github.com/spaolacci/murmur3
+  version: 9f5d223c60793748f04a9d5b4b4eacddfc1f755d
 - name: golang.org/x/crypto
   version: 91a49db82a88618983a78a06c1cbd4e00ab749ab
   subpackages:
@@ -107,5 +109,7 @@ imports:
   subpackages:
   - unix
 testImports:
-- name: github.com/trussle/uuid
-  version: 23bc856a10519000ea4c17b77520ab48c3d3bbfd
+- name: github.com/trussle/harness
+  version: 2d32c1f9391a2d295c3fb6a769bf18e626251e4b
+  subpackages:
+  - generators
