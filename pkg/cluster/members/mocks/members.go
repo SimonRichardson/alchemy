@@ -235,3 +235,27 @@ func (m *MockMember) Name() string {
 func (mr *MockMemberMockRecorder) Name() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Name", reflect.TypeOf((*MockMember)(nil).Name))
 }
+
+// PeerType mocks base method
+func (m *MockMember) PeerType() members.PeerType {
+	ret := m.ctrl.Call(m, "PeerType")
+	ret0, _ := ret[0].(members.PeerType)
+	return ret0
+}
+
+// PeerType indicates an expected call of PeerType
+func (mr *MockMemberMockRecorder) PeerType() *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PeerType", reflect.TypeOf((*MockMember)(nil).PeerType))
+}
+
+// Tags mocks base method
+func (m *MockMember) Tags() map[string]string {
+	ret := m.ctrl.Call(m, "Tags")
+	ret0, _ := ret[0].(map[string]string)
+	return ret0
+}
+
+// Tags indicates an expected call of Tags
+func (mr *MockMemberMockRecorder) Tags() *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Tags", reflect.TypeOf((*MockMember)(nil).Tags))
+}

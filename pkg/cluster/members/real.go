@@ -3,6 +3,8 @@ package members
 import (
 	"fmt"
 	"io"
+	"net"
+	"strconv"
 	"sync"
 
 	"github.com/go-kit/kit/log"
@@ -11,6 +13,11 @@ import (
 	"github.com/hashicorp/serf/cmd/serf/command/agent"
 	"github.com/hashicorp/serf/serf"
 	"github.com/pkg/errors"
+)
+
+const (
+	// PeerTypeTag defines the key for the PeerType tag
+	PeerTypeTag = "peertype"
 )
 
 const (
@@ -133,8 +140,10 @@ func (r *realMemberList) LocalNode() Member {
 }
 
 func (r *realMemberList) Members() []Member {
-	m := r.list.Members()
-	n := make([]Member, len(m))
+	var (
+		m = r.list.Members()
+		n = make([]Member, len(m))
+	)
 	for k, v := range m {
 		n[k] = &realMember{v}
 	}
@@ -151,6 +160,14 @@ func (r *realMember) Name() string {
 
 func (r *realMember) Address() string {
 	return r.member.Address()
+}
+
+func (r *realMember) PeerType() PeerType {
+	return PeerTypeUnknown
+}
+
+func (r *realMember) Tags() map[string]string {
+	return make(map[string]string)
 }
 
 type realEventHandler struct {
@@ -196,8 +213,9 @@ func (h realEventHandler) handleMemberEvent(event serf.MemberEvent) {
 	for _, v := range event.Members {
 		m = append(m, eventMember{
 			name: v.Name,
-			addr: v.Addr.String(),
+			host: v.Addr.String(),
 			port: int(v.Port),
+			tags: v.Tags,
 		})
 	}
 
@@ -234,10 +252,10 @@ func transformConfig(config Config) (*agent.Config, *serf.Config, io.Writer) {
 	serfConfig.LogOutput = config.logOutput
 	serfConfig.BroadcastTimeout = config.broadcastTimeout
 	serfConfig.Tags = encodePeerInfoTag(PeerInfo{
-		Name:    config.nodeName,
-		Type:    config.peerType,
-		APIAddr: config.apiAddr,
-		APIPort: config.apiPort,
+		Name:     config.nodeName,
+		PeerType: config.peerType,
+		APIAddr:  config.apiAddr,
+		APIPort:  config.apiPort,
 	})
 	serfConfig.Init()
 
@@ -246,8 +264,9 @@ func transformConfig(config Config) (*agent.Config, *serf.Config, io.Writer) {
 
 type eventMember struct {
 	name string
-	addr string
+	host string
 	port int
+	tags map[string]string
 }
 
 func (e eventMember) Name() string {
@@ -255,5 +274,16 @@ func (e eventMember) Name() string {
 }
 
 func (e eventMember) Address() string {
-	return fmt.Sprintf("%s:%d", e.addr, e.port)
+	return net.JoinHostPort(e.host, strconv.Itoa(e.port))
+}
+
+func (e eventMember) PeerType() PeerType {
+	if t, ok := e.tags[PeerTypeTag]; ok {
+		return PeerType(t)
+	}
+	return PeerTypeUnknown
+}
+
+func (e eventMember) Tags() map[string]string {
+	return e.tags
 }

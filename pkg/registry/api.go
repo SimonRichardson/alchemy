@@ -226,8 +226,11 @@ func (e eventAdapter) HandleEvent(event members.Event) error {
 
 		switch memberEvent.EventType {
 		case members.EventMemberJoined:
+			e.registry.Add(memberEvent.Members)
 		case members.EventMemberLeft:
+			e.registry.Remove(memberEvent.Members)
 		case members.EventMemberUpdated:
+			e.registry.Update(memberEvent.Members)
 		}
 	}
 	return nil

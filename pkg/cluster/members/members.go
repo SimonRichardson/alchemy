@@ -13,6 +13,11 @@ import (
 // PeerType describes the type of peer with in the cluster.
 type PeerType string
 
+const (
+	// PeerTypeUnknown defines a PeerType that is unknown in the cluster.
+	PeerTypeUnknown PeerType = "peertype:unknown"
+)
+
 func (p PeerType) String() string {
 	return string(p)
 }
@@ -83,6 +88,12 @@ type Member interface {
 
 	// Address returns the host:port of the member
 	Address() string
+
+	// PeerType returns the members PeerType
+	PeerType() PeerType
+
+	// Tags returns any associated tags of the member
+	Tags() map[string]string
 }
 
 // Config defines a configuration setup for creating a list to manage the
@@ -197,19 +208,19 @@ func WithBroadcastTimeout(d time.Duration) Option {
 
 // PeerInfo describes what each peer is, along with the addr and port of each
 type PeerInfo struct {
-	Name    string
-	Type    PeerType
-	APIAddr string
-	APIPort int
+	Name     string
+	PeerType PeerType
+	APIAddr  string
+	APIPort  int
 }
 
 // encodeTagPeerInfo encodes the peer information for the node tags.
 func encodePeerInfoTag(info PeerInfo) map[string]string {
 	return map[string]string{
-		"name":     info.Name,
-		"type":     string(info.Type),
-		"api_addr": info.APIAddr,
-		"api_port": strconv.Itoa(info.APIPort),
+		"name":      info.Name,
+		PeerTypeTag: info.PeerType.String(),
+		"api_addr":  info.APIAddr,
+		"api_port":  strconv.Itoa(info.APIPort),
 	}
 }
 
@@ -222,16 +233,16 @@ func decodePeerInfoTag(m map[string]string) (info PeerInfo, err error) {
 	}
 	info.Name = name
 
-	peerType, ok := m["type"]
+	peerType, ok := m[PeerTypeTag]
 	if !ok {
-		err = errors.Errorf("missing api_addr")
+		err = errors.Errorf("missing %s", PeerTypeTag)
 		return
 	}
-	info.Type = PeerType(peerType)
+	info.PeerType = PeerType(peerType)
 
 	apiPort, ok := m["api_port"]
 	if !ok {
-		err = errors.Errorf("missing api_addr")
+		err = errors.Errorf("missing api_port")
 		return
 	}
 	if info.APIPort, err = strconv.Atoi(apiPort); err != nil {

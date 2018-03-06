@@ -100,7 +100,7 @@ func (p *peer) State() map[string]interface{} {
 func (p *peer) Current(peerType members.PeerType) (map[members.PeerType][]string, error) {
 	res := make(map[members.PeerType][]string)
 	return res, p.members.Walk(func(info members.PeerInfo) error {
-		typ := info.Type
+		typ := info.PeerType
 		if peerType == PeerTypeAny || typ == peerType {
 			res[typ] = append(res[typ], net.JoinHostPort(info.APIAddr, strconv.Itoa(info.APIPort)))
 		}

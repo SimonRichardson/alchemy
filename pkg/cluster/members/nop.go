@@ -24,5 +24,7 @@ func (nopMemberList) Members() []Member { return make([]Member, 0) }
 
 type nopMember struct{}
 
-func (nopMember) Name() string    { return "" }
-func (nopMember) Address() string { return "0.0.0.0:0" }
+func (nopMember) Name() string            { return "" }
+func (nopMember) Address() string         { return "0.0.0.0:0" }
+func (nopMember) PeerType() PeerType      { return PeerTypeUnknown }
+func (nopMember) Tags() map[string]string { return make(map[string]string) }

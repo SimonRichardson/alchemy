@@ -2,4 +2,12 @@
 
 package registry
 
-type Registry interface{}
+import (
+	"github.com/SimonRichardson/alchemy/pkg/cluster/members"
+)
+
+type Registry interface {
+	Add([]members.Member) error
+	Remove([]members.Member) error
+	Update([]members.Member) error
+}

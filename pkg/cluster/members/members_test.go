@@ -66,10 +66,10 @@ func TestPeerInfo(t *testing.T) {
 	t.Run("encode", func(t *testing.T) {
 		fn := func(name, peerType, addr string, port int) bool {
 			m := encodePeerInfoTag(PeerInfo{
-				Name:    name,
-				Type:    PeerType(peerType),
-				APIAddr: addr,
-				APIPort: port,
+				Name:     name,
+				PeerType: PeerType(peerType),
+				APIAddr:  addr,
+				APIPort:  port,
 			})
 
 			p, err := strconv.Atoi(m["api_port"])
@@ -78,7 +78,7 @@ func TestPeerInfo(t *testing.T) {
 			}
 
 			return m["name"] == name &&
-				m["type"] == peerType &&
+				m[PeerTypeTag] == peerType &&
 				m["api_addr"] == addr &&
 				p == port
 		}
@@ -91,10 +91,10 @@ func TestPeerInfo(t *testing.T) {
 	t.Run("decode", func(t *testing.T) {
 		fn := func(name, peerType, addr string, port int) bool {
 			m := encodePeerInfoTag(PeerInfo{
-				Name:    name,
-				Type:    PeerType(peerType),
-				APIAddr: addr,
-				APIPort: port,
+				Name:     name,
+				PeerType: PeerType(peerType),
+				APIAddr:  addr,
+				APIPort:  port,
 			})
 
 			info, err := decodePeerInfoTag(m)
@@ -103,7 +103,7 @@ func TestPeerInfo(t *testing.T) {
 			}
 
 			return info.Name == name &&
-				info.Type.String() == peerType &&
+				info.PeerType.String() == peerType &&
 				info.APIAddr == addr &&
 				info.APIPort == port
 		}
@@ -126,8 +126,8 @@ func TestPeerInfo(t *testing.T) {
 
 	t.Run("decode api_addr failure", func(t *testing.T) {
 		_, err := decodePeerInfoTag(map[string]string{
-			"type":     "x",
-			"api_port": "1",
+			PeerTypeTag: "x",
+			"api_port":  "1",
 		})
 
 		if expected, actual := false, err == nil; expected != actual {
@@ -137,8 +137,8 @@ func TestPeerInfo(t *testing.T) {
 
 	t.Run("decode api_port failure", func(t *testing.T) {
 		_, err := decodePeerInfoTag(map[string]string{
-			"type":     "x",
-			"api_addr": "y",
+			PeerTypeTag: "x",
+			"api_addr":  "y",
 		})
 
 		if expected, actual := false, err == nil; expected != actual {
@@ -148,9 +148,9 @@ func TestPeerInfo(t *testing.T) {
 
 	t.Run("decode api_port integer failure", func(t *testing.T) {
 		_, err := decodePeerInfoTag(map[string]string{
-			"type":     "x",
-			"api_addr": "y",
-			"api_port": "x",
+			PeerTypeTag: "x",
+			"api_addr":  "y",
+			"api_port":  "x",
 		})
 
 		if expected, actual := false, err == nil; expected != actual {

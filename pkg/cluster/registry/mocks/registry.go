@@ -5,6 +5,7 @@
 package mocks
 
 import (
+	members "github.com/SimonRichardson/alchemy/pkg/cluster/members"
 	gomock "github.com/golang/mock/gomock"
 	reflect "reflect"
 )
@@ -30,4 +31,40 @@ func NewMockRegistry(ctrl *gomock.Controller) *MockRegistry {
 // EXPECT returns an object that allows the caller to indicate expected use
 func (m *MockRegistry) EXPECT() *MockRegistryMockRecorder {
 	return m.recorder
+}
+
+// Add mocks base method
+func (m *MockRegistry) Add(arg0 []members.Member) error {
+	ret := m.ctrl.Call(m, "Add", arg0)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Add indicates an expected call of Add
+func (mr *MockRegistryMockRecorder) Add(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Add", reflect.TypeOf((*MockRegistry)(nil).Add), arg0)
+}
+
+// Remove mocks base method
+func (m *MockRegistry) Remove(arg0 []members.Member) error {
+	ret := m.ctrl.Call(m, "Remove", arg0)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Remove indicates an expected call of Remove
+func (mr *MockRegistryMockRecorder) Remove(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Remove", reflect.TypeOf((*MockRegistry)(nil).Remove), arg0)
+}
+
+// Update mocks base method
+func (m *MockRegistry) Update(arg0 []members.Member) error {
+	ret := m.ctrl.Call(m, "Update", arg0)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Update indicates an expected call of Update
+func (mr *MockRegistryMockRecorder) Update(arg0 interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockRegistry)(nil).Update), arg0)
 }
