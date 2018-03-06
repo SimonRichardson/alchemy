@@ -1,4 +1,4 @@
-PATH_DISCOURSE = github.com/SimonRichardson/discourse
+PATH_DISCOURSE = github.com/SimonRichardson/alchemy
 
 .PHONY: all
 all: install
@@ -11,14 +11,14 @@ install:
 	glide install --strip-vendor
 
 .PHONY: build
-build: dist/discourse
+build: dist/alchemy
 
 .PHONY: clean
 clean: FORCE
-	rm -f dist/discourse
+	rm -f dist/alchemy
 
-dist/discourse:
-	go build -o dist/discourse ${PATH_DISCOURSE}/cmd/discourse
+dist/alchemy:
+	go build -o dist/alchemy ${PATH_DISCOURSE}/cmd/alchemy
 
 .PHONY: build-mocks
 build-mocks:
@@ -34,16 +34,16 @@ FORCE:
 
 .PHONY: unit-tests
 unit-tests:
-	docker-compose run discourse go test -v ./pkg/...
+	docker-compose run alchemy go test -v ./pkg/...
 
 .PHONY: integration-tests
 integration-tests:
-	docker-compose run discourse go test -v -tags=integration ./pkg/...
+	docker-compose run alchemy go test -v -tags=integration ./pkg/...
 
 .PHONY: coverage-tests
 coverage-tests:
 	@ mkdir -p bin
-	docker-compose run discourse go test -covermode=count -coverprofile=bin/coverage.out -v -tags=integration ${COVER_PKG}
+	docker-compose run alchemy go test -covermode=count -coverprofile=bin/coverage.out -v -tags=integration ${COVER_PKG}
 
 .PHONY: coverage-view
 coverage-view:

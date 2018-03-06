@@ -1,4 +1,4 @@
-//go:generate mockgen -package=mocks -destination=./mocks/members.go github.com/SimonRichardson/discourse/pkg/cluster/members Members,MemberList,Member
+//go:generate mockgen -package=mocks -destination=./mocks/members.go github.com/SimonRichardson/alchemy/pkg/cluster/members Members,MemberList,Member
 
 package members
 

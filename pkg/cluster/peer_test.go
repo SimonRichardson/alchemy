@@ -8,8 +8,8 @@ import (
 	"testing"
 	"testing/quick"
 
-	"github.com/SimonRichardson/discourse/pkg/cluster/members"
-	"github.com/SimonRichardson/discourse/pkg/cluster/members/mocks"
+	"github.com/SimonRichardson/alchemy/pkg/cluster/members"
+	"github.com/SimonRichardson/alchemy/pkg/cluster/members/mocks"
 	"github.com/go-kit/kit/log"
 	"github.com/golang/mock/gomock"
 	"github.com/pborman/uuid"

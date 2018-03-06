@@ -6,8 +6,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/SimonRichardson/discourse/pkg/api"
-	"github.com/SimonRichardson/discourse/pkg/metrics"
+	"github.com/SimonRichardson/alchemy/pkg/api"
+	"github.com/SimonRichardson/alchemy/pkg/metrics"
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
 	"github.com/gorilla/mux"

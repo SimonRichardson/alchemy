@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/SimonRichardson/discourse/pkg/cluster/members"
+	"github.com/SimonRichardson/alchemy/pkg/cluster/members"
 	"github.com/go-kit/kit/log"
 	"github.com/pkg/errors"
 )

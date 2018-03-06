@@ -1,8 +1,8 @@
 version: '2'
 
 services:
-  discourse:
+  alchemy:
     image: golang:1.10-alpine
     volumes:
-      - ./:/go/src/github.com/SimonRichardson/discourse
-    working_dir: /go/src/github.com/SimonRichardson/discourse
+      - ./:/go/src/github.com/SimonRichardson/alchemy
+    working_dir: /go/src/github.com/SimonRichardson/alchemy

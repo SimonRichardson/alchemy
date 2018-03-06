@@ -1,4 +1,4 @@
-//go:generate mockgen -package=mocks -destination=./mocks/metrics.go github.com/SimonRichardson/discourse/pkg/metrics Gauge,HistogramVec,Counter,Observer
+//go:generate mockgen -package=mocks -destination=./mocks/metrics.go github.com/SimonRichardson/alchemy/pkg/metrics Gauge,HistogramVec,Counter,Observer
 
 package metrics
 

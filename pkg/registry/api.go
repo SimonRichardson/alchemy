@@ -1,4 +1,4 @@
-package sentinel
+package registry
 
 import (
 	"encoding/json"
@@ -7,17 +7,17 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/SimonRichardson/discourse/pkg/api"
-	"github.com/SimonRichardson/discourse/pkg/cluster"
-	"github.com/SimonRichardson/discourse/pkg/cluster/members"
-	"github.com/SimonRichardson/discourse/pkg/metrics"
+	"github.com/SimonRichardson/alchemy/pkg/api"
+	"github.com/SimonRichardson/alchemy/pkg/cluster"
+	"github.com/SimonRichardson/alchemy/pkg/cluster/members"
+	"github.com/SimonRichardson/alchemy/pkg/metrics"
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
 )
 
-// These are the sentinel API URL paths.
+// These are the registry API URL paths.
 const (
 	APIPathServicesQuery = "/services"
 )
@@ -26,7 +26,7 @@ const (
 	defaultContentType = "application/json"
 )
 
-// API wraps a sentinel and provides a basic HTTP API.
+// API wraps a registry and provides a basic HTTP API.
 type API struct {
 	handler  http.Handler
 	peer     cluster.Peer
@@ -40,10 +40,10 @@ type API struct {
 // The API is an http.Handler and can ServeHTTP.
 //
 //     GET /services
-//         Returns the current list of all services according to the sentinel.
+//         Returns the current list of all services according to the registry.
 //
 //     GET /services?type={type}
-//         Returns the current list of services according to the sentinel that
+//         Returns the current list of services according to the registry that
 //         correspond to the type.
 //         Returns 400 Bad Request if the type is in an invalid format.
 //         Returns 404 Not Found if the type doesn't exist.

@@ -3,6 +3,6 @@ FROM iron/go
 EXPOSE 8080
 
 WORKDIR /app
-ADD discourse /app/
+ADD alchemy /app/
 
-ENTRYPOINT ["./discourse"]
+ENTRYPOINT ["./alchemy"]

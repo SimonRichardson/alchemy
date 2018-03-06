@@ -44,8 +44,8 @@ func main() {
 
 	var cmd command
 	switch strings.ToLower(args[1]) {
-	case "sentinel":
-		cmd = runSentinel
+	case "registry":
+		cmd = runRegistry
 	case "query":
 		cmd = runQuery
 	default:
@@ -61,7 +61,7 @@ func usage() {
 	fmt.Fprintf(os.Stderr, "  %s <mode> [flags]\n", os.Args[0])
 	fmt.Fprintf(os.Stderr, "\n")
 	fmt.Fprintf(os.Stderr, "MODES\n")
-	fmt.Fprintf(os.Stderr, "  sentinel      Sentinel service\n")
+	fmt.Fprintf(os.Stderr, "  registry      Registry service\n")
 	fmt.Fprintf(os.Stderr, "  query         Query service\n")
 	fmt.Fprintf(os.Stderr, "\n")
 	fmt.Fprintf(os.Stderr, "VERSION\n")

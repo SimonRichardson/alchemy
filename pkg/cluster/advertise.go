@@ -1,4 +1,4 @@
-//go:generate mockgen -package=mocks -destination=./mocks/resolver.go github.com/SimonRichardson/discourse/pkg/cluster Resolver
+//go:generate mockgen -package=mocks -destination=./mocks/resolver.go github.com/SimonRichardson/alchemy/pkg/cluster Resolver
 
 package cluster
 

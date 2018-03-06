@@ -6,7 +6,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	metricMocks "github.com/SimonRichardson/discourse/pkg/metrics/mocks"
+	metricMocks "github.com/SimonRichardson/alchemy/pkg/metrics/mocks"
 	"github.com/go-kit/kit/log"
 	"github.com/golang/mock/gomock"
 )

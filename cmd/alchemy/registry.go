@@ -8,10 +8,10 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/SimonRichardson/discourse/pkg/cluster"
-	"github.com/SimonRichardson/discourse/pkg/cluster/members"
-	"github.com/SimonRichardson/discourse/pkg/sentinel"
-	"github.com/SimonRichardson/discourse/pkg/status"
+	"github.com/SimonRichardson/alchemy/pkg/cluster"
+	"github.com/SimonRichardson/alchemy/pkg/cluster/members"
+	"github.com/SimonRichardson/alchemy/pkg/registry"
+	"github.com/SimonRichardson/alchemy/pkg/status"
 	"github.com/SimonRichardson/flagset"
 	"github.com/SimonRichardson/gexec"
 	"github.com/go-kit/kit/log"
@@ -26,13 +26,13 @@ const (
 )
 
 const (
-	SentinelPeerType members.PeerType = "peertype:sentinel"
+	RegistryPeerType members.PeerType = "peertype:registry"
 )
 
-func runSentinel(args []string) error {
-	// flags for the sentinel command
+func runRegistry(args []string) error {
+	// flags for the registry command
 	var (
-		flags = flagset.NewFlagSet("sentinel", flag.ExitOnError)
+		flags = flagset.NewFlagSet("registry", flag.ExitOnError)
 
 		debug                    = flags.Bool("debug", false, "debug logging")
 		debugCluster             = flags.Bool("debug.cluster", false, "debug cluster logging")
@@ -46,7 +46,7 @@ func runSentinel(args []string) error {
 	)
 
 	flags.Var(&clusterPeers, "peer", "cluster peer host:port (repeatable)")
-	flags.Usage = usageFor(flags, "sentinel [flags]")
+	flags.Usage = usageFor(flags, "registry [flags]")
 	if err := flags.Parse(args); err != nil {
 		return nil
 	}
@@ -144,7 +144,7 @@ func runSentinel(args []string) error {
 	{
 		g.Add(func() error {
 			mux := http.NewServeMux()
-			mux.Handle("/sentinel/", http.StripPrefix("/sentinel", sentinel.NewAPI(
+			mux.Handle("/registry/", http.StripPrefix("/registry", registry.NewAPI(
 				peer,
 				log.With(logger, "component", "store_api"),
 				connectedClients.WithLabelValues("api"),

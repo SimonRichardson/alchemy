@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/SimonRichardson/discourse/pkg/cluster"
-	"github.com/SimonRichardson/discourse/pkg/cluster/members"
+	"github.com/SimonRichardson/alchemy/pkg/cluster"
+	"github.com/SimonRichardson/alchemy/pkg/cluster/members"
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
 	"github.com/pborman/uuid"
@@ -18,7 +18,7 @@ func configureRemoteCache(debugCluster bool,
 	peers []string,
 ) (cluster.Peer, error) {
 	clusterMembersConfig, err := members.Build(
-		members.WithPeerType(SentinelPeerType),
+		members.WithPeerType(RegistryPeerType),
 		members.WithNodeName(uuid.New()),
 		members.WithAPIAddrPort(apiAddr, apiPort),
 		members.WithBindAddrPort(bindAddrHost, bindAddrPort),

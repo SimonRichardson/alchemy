@@ -1,8 +1,8 @@
-//go:generate mockgen -package=mocks -destination=./mocks/peer.go github.com/SimonRichardson/discourse/pkg/cluster Peer
+//go:generate mockgen -package=mocks -destination=./mocks/peer.go github.com/SimonRichardson/alchemy/pkg/cluster Peer
 
 package cluster
 
-import "github.com/SimonRichardson/discourse/pkg/cluster/members"
+import "github.com/SimonRichardson/alchemy/pkg/cluster/members"
 
 // Peer represents the node with in the cluster.
 type Peer interface {

@@ -1,4 +1,4 @@
-package: github.com/SimonRichardson/discourse
+package: github.com/SimonRichardson/alchemy
 import:
   - package: github.com/pkg/errors
   - package: github.com/go-kit/kit

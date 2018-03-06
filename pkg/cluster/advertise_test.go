@@ -4,7 +4,7 @@ import (
 	"net"
 	"testing"
 
-	"github.com/SimonRichardson/discourse/pkg/cluster/mocks"
+	"github.com/SimonRichardson/alchemy/pkg/cluster/mocks"
 	"github.com/golang/mock/gomock"
 
 	"github.com/go-kit/kit/log"
