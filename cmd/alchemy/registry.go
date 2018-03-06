@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/SimonRichardson/alchemy/pkg/cluster"
 	"github.com/SimonRichardson/alchemy/pkg/cluster/members"
@@ -23,6 +24,7 @@ import (
 const (
 	defaultClusterReplicationFactor = 5
 	defaultMetricsRegistration      = true
+	defaultRegistryTicker           = time.Second * 10
 )
 
 const (
@@ -40,7 +42,8 @@ func runRegistry(args []string) error {
 		clusterBindAddr          = flags.String("cluster", defaultClusterAddr, "listen address for cluster")
 		clusterAdvertiseAddr     = flags.String("cluster.advertise-addr", "", "optional, explicit address to advertise in cluster")
 		clusterReplicationFactor = flags.Int("cluster.replication.factor", defaultClusterReplicationFactor, "replication factor for node configuration")
-		metricsRegistration      = flags.Bool("metrics.registration", defaultMetricsRegistration, "Registration of metrics on launch")
+		metricsRegistration      = flags.Bool("metrics.registration", defaultMetricsRegistration, "registration of metrics on launch")
+		registryTicker           = flags.Duration("registry.ticker", defaultRegistryTicker, "interval duration for cluster peer querying")
 
 		clusterPeers stringSlice
 	)
@@ -146,6 +149,8 @@ func runRegistry(args []string) error {
 			mux := http.NewServeMux()
 			mux.Handle("/registry/", http.StripPrefix("/registry", registry.NewAPI(
 				peer,
+				nil,
+				*registryTicker,
 				log.With(logger, "component", "store_api"),
 				connectedClients.WithLabelValues("api"),
 				apiDuration,

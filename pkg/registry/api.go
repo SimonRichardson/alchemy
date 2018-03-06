@@ -10,6 +10,7 @@ import (
 	"github.com/SimonRichardson/alchemy/pkg/api"
 	"github.com/SimonRichardson/alchemy/pkg/cluster"
 	"github.com/SimonRichardson/alchemy/pkg/cluster/members"
+	"github.com/SimonRichardson/alchemy/pkg/cluster/registry"
 	"github.com/SimonRichardson/alchemy/pkg/metrics"
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
@@ -28,12 +29,15 @@ const (
 
 // API wraps a registry and provides a basic HTTP API.
 type API struct {
-	handler  http.Handler
-	peer     cluster.Peer
-	logger   log.Logger
-	clients  metrics.Gauge
-	duration metrics.HistogramVec
-	errors   api.Error
+	handler        http.Handler
+	peer           cluster.Peer
+	registry       registry.Registry
+	tickerDuration time.Duration
+	stop           chan chan struct{}
+	logger         log.Logger
+	clients        metrics.Gauge
+	duration       metrics.HistogramVec
+	errors         api.Error
 }
 
 // NewAPI creates a API with the correct dependencies.
@@ -49,16 +53,21 @@ type API struct {
 //         Returns 404 Not Found if the type doesn't exist.
 //
 func NewAPI(peer cluster.Peer,
+	registry registry.Registry,
+	tickerDuration time.Duration,
 	logger log.Logger,
 	clients metrics.Gauge,
 	duration metrics.HistogramVec,
 ) *API {
 	api := &API{
-		peer:     peer,
-		logger:   logger,
-		clients:  clients,
-		duration: duration,
-		errors:   api.NewError(logger),
+		peer:           peer,
+		registry:       registry,
+		tickerDuration: tickerDuration,
+		stop:           make(chan chan struct{}),
+		logger:         logger,
+		clients:        clients,
+		duration:       duration,
+		errors:         api.NewError(logger),
 	}
 	{
 		router := mux.NewRouter().StrictSlash(true)
@@ -67,6 +76,36 @@ func NewAPI(peer cluster.Peer,
 		api.handler = router
 	}
 	return api
+}
+
+func (a *API) Run() error {
+	adapter := eventAdapter{registry: a.registry}
+	if err := a.peer.RegisterEventHandler(adapter); err != nil {
+		return err
+	}
+
+	ticker := time.NewTicker(a.tickerDuration)
+	defer ticker.Stop()
+	for {
+		select {
+		case <-ticker.C:
+			// TODO (Simon) - walk through the peer nodes and make a change set
+
+		case c := <-a.stop:
+			defer close(c)
+
+			if err := a.peer.DeregisterEventHandler(adapter); err != nil {
+				return err
+			}
+		}
+	}
+}
+
+// Stop and close out the API
+func (a *API) Stop() {
+	c := make(chan struct{})
+	a.stop <- c
+	<-c
 }
 
 func (a *API) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -173,3 +212,23 @@ const (
 	httpHeaderDuration    = "X-Duration"
 	httpHeaderType        = "X-Type"
 )
+
+type eventAdapter struct {
+	registry registry.Registry
+}
+
+func (e eventAdapter) HandleEvent(event members.Event) error {
+	if event.Type() == members.EventMember {
+		memberEvent, ok := event.(members.MemberEvent)
+		if !ok {
+			return nil
+		}
+
+		switch memberEvent.EventType {
+		case members.EventMemberJoined:
+		case members.EventMemberLeft:
+		case members.EventMemberUpdated:
+		}
+	}
+	return nil
+}
