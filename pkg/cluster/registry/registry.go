@@ -2,15 +2,6 @@
 
 package registry
 
-// Address represents a url that can be used for a host and port inside the
-// registry.
-type Address string
-
-// HostPort returns the address host and port (host:port)
-func (a Address) HostPort() string {
-	return string(a)
-}
-
 type Key interface {
 
 	// Name returns the registry key
@@ -20,7 +11,7 @@ type Key interface {
 	Type() string
 
 	// Address defines the url of the key.
-	Address() Address
+	Address() string
 
 	// Tags returns any associated tags of the key
 	Tags() map[string]string
@@ -41,4 +32,14 @@ type Registry interface {
 	// Update updates a key in place. Updating the key should be done in place.
 	// Returns true if the key was updated to the registry
 	Update(Key) bool
+
+	// Info returns back the information for a particular key type
+	// Returns true if the information is available
+	Info(string) (Info, bool)
+}
+
+// Info represents information for a registry key type
+type Info struct {
+	Hashes map[string]string
+	Keys   map[string][]Key
 }

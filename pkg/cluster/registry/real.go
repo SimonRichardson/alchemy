@@ -8,17 +8,17 @@ import (
 )
 
 type real struct {
-	mtx               sync.Mutex
-	hashrings         map[string]*hashring.HashRing
-	keys              map[Address]map[string]Key
+	mtx               sync.RWMutex
+	hashRings         map[string]*hashring.HashRing
+	keys              map[string]map[string]Key
 	hashFn            func([]byte) uint32
 	replicationFactor int
 }
 
 func New(hashFn func([]byte) uint32, replicationFactor int) Registry {
 	return &real{
-		hashrings:         make(map[string]*hashring.HashRing),
-		keys:              make(map[Address]map[string]Key),
+		hashRings:         make(map[string]*hashring.HashRing),
+		keys:              make(map[string]map[string]Key),
 		hashFn:            hashFn,
 		replicationFactor: replicationFactor,
 	}
@@ -29,13 +29,13 @@ func (r *real) Add(key Key) bool {
 	defer r.mtx.Unlock()
 
 	keyType := key.Type()
-	if _, ok := r.hashrings[keyType]; !ok {
-		r.hashrings[keyType] = hashring.New(r.hashFn, r.replicationFactor)
+	if _, ok := r.hashRings[keyType]; !ok {
+		r.hashRings[keyType] = hashring.New(r.hashFn, r.replicationFactor)
 	}
 
 	var (
 		addr = key.Address()
-		res  = r.hashrings[keyType].Add(addr.HostPort())
+		res  = r.hashRings[keyType].Add(addr)
 	)
 	if _, ok := r.keys[addr]; !ok {
 		r.keys[addr] = make(map[string]Key)
@@ -53,8 +53,8 @@ func (r *real) Remove(key Key) bool {
 		keyType = key.Type()
 		addr    = key.Address()
 	)
-	if _, ok := r.hashrings[keyType]; ok {
-		r.hashrings[keyType].Remove(addr.HostPort())
+	if _, ok := r.hashRings[keyType]; ok {
+		r.hashRings[keyType].Remove(addr)
 	}
 	if keys, ok := r.keys[addr]; ok {
 		delete(keys, key.Name())
@@ -70,7 +70,7 @@ func (r *real) Update(key Key) bool {
 		keyType = key.Type()
 		addr    = key.Address()
 	)
-	if _, ok := r.hashrings[keyType]; !ok || (ok && !r.hashrings[keyType].Contains(addr.HostPort())) {
+	if _, ok := r.hashRings[keyType]; !ok || (ok && !r.hashRings[keyType].Contains(addr)) {
 		return false
 	}
 
@@ -85,6 +85,45 @@ func (r *real) Update(key Key) bool {
 	r.keys[addr][name] = key
 
 	return true
+}
+
+func (r *real) Info(s string) (Info, bool) {
+	r.mtx.RLock()
+	defer r.mtx.RUnlock()
+
+	hashRing, ok := r.hashRings[s]
+	if !ok {
+		return Info{}, false
+	}
+
+	hashes := make(map[string]string)
+	if err := hashRing.Walk(func(hash, addr string) error {
+		hashes[hash] = addr
+		return nil
+	}); err != nil {
+		return Info{}, false
+	}
+
+	keys := make(map[string][]Key)
+	for _, v := range hashes {
+		if k := r.getKeysByAddress(v); len(k) > 0 {
+			keys[v] = append(keys[v], k...)
+		}
+	}
+
+	return Info{
+		Hashes: hashes,
+		Keys:   keys,
+	}, true
+}
+
+func (r *real) getKeysByAddress(addr string) (res []Key) {
+	if keys, ok := r.keys[addr]; ok {
+		for _, v := range keys {
+			res = append(res, v)
+		}
+	}
+	return
 }
 
 type key struct {
@@ -103,8 +142,8 @@ func (k *key) Type() string {
 	return k.member.PeerType().String()
 }
 
-func (k *key) Address() Address {
-	return Address(k.member.Address())
+func (k *key) Address() string {
+	return k.member.Address()
 }
 
 func (k *key) Tags() map[string]string {
