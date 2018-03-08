@@ -46,7 +46,6 @@ func NewRealMembers(config Config, logger log.Logger) (Members, error) {
 
 	return &realMembers{
 		config:        config,
-		mutex:         sync.Mutex{},
 		agent:         actor,
 		members:       actor.Serf(),
 		eventHandlers: make(map[EventHandler]agent.EventHandler),

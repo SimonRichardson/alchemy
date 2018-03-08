@@ -5,7 +5,7 @@
 package mocks
 
 import (
-	members "github.com/SimonRichardson/alchemy/pkg/cluster/members"
+	registry "github.com/SimonRichardson/alchemy/pkg/cluster/registry"
 	gomock "github.com/golang/mock/gomock"
 	reflect "reflect"
 )
@@ -34,9 +34,9 @@ func (m *MockRegistry) EXPECT() *MockRegistryMockRecorder {
 }
 
 // Add mocks base method
-func (m *MockRegistry) Add(arg0 []members.Member) error {
+func (m *MockRegistry) Add(arg0 registry.Key) bool {
 	ret := m.ctrl.Call(m, "Add", arg0)
-	ret0, _ := ret[0].(error)
+	ret0, _ := ret[0].(bool)
 	return ret0
 }
 
@@ -46,9 +46,9 @@ func (mr *MockRegistryMockRecorder) Add(arg0 interface{}) *gomock.Call {
 }
 
 // Remove mocks base method
-func (m *MockRegistry) Remove(arg0 []members.Member) error {
+func (m *MockRegistry) Remove(arg0 registry.Key) bool {
 	ret := m.ctrl.Call(m, "Remove", arg0)
-	ret0, _ := ret[0].(error)
+	ret0, _ := ret[0].(bool)
 	return ret0
 }
 
@@ -58,9 +58,9 @@ func (mr *MockRegistryMockRecorder) Remove(arg0 interface{}) *gomock.Call {
 }
 
 // Update mocks base method
-func (m *MockRegistry) Update(arg0 []members.Member) error {
+func (m *MockRegistry) Update(arg0 registry.Key) bool {
 	ret := m.ctrl.Call(m, "Update", arg0)
-	ret0, _ := ret[0].(error)
+	ret0, _ := ret[0].(bool)
 	return ret0
 }
 

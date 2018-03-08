@@ -224,14 +224,32 @@ func (e eventAdapter) HandleEvent(event members.Event) error {
 			return nil
 		}
 
+		var fn func(registry.Key) bool
 		switch memberEvent.EventType {
 		case members.EventMemberJoined:
-			e.registry.Add(memberEvent.Members)
+			fn = e.registry.Add
 		case members.EventMemberLeft:
-			e.registry.Remove(memberEvent.Members)
+			fn = e.registry.Remove
 		case members.EventMemberUpdated:
-			e.registry.Update(memberEvent.Members)
+			fn = e.registry.Update
+		}
+
+		if fn == nil {
+			return nil
+		}
+
+		keys := membersToKeys(memberEvent.Members)
+		for _, v := range keys {
+			fn(v)
 		}
 	}
 	return nil
+}
+
+func membersToKeys(m []members.Member) []registry.Key {
+	res := make([]registry.Key, len(m))
+	for k, v := range m {
+		res[k] = registry.NewMemberKey(v)
+	}
+	return res
 }
