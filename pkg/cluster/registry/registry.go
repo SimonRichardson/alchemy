@@ -34,12 +34,19 @@ type Registry interface {
 	Update(Key) bool
 
 	// Info returns back the information for a particular key type
-	// Returns true if the information is available
-	Info(string) (Info, bool)
+	// Returns an error if it can't gather the information about a specific key
+	// type
+	Info(string) (Info, error)
+
+	// Checksum returns back a checksum for a particular key type
+	// Returns an error if it can't gather the checksum about a specific key
+	// type
+	Checksum(string) (string, error)
 }
 
 // Info represents information for a registry key type
 type Info struct {
-	Hashes map[string]string
-	Keys   map[string][]Key
+	Checksum string
+	Hashes   map[string]string
+	Keys     map[string][]Key
 }

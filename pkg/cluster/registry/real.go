@@ -1,10 +1,17 @@
 package registry
 
 import (
+	"errors"
+	"fmt"
 	"sync"
 
 	"github.com/SimonRichardson/alchemy/pkg/cluster/hashring"
 	"github.com/SimonRichardson/alchemy/pkg/cluster/members"
+)
+
+var (
+	// ErrNoHashRingFound states if a hashring is not found
+	ErrNoHashRingFound = errors.New("no hashring found")
 )
 
 type real struct {
@@ -87,13 +94,18 @@ func (r *real) Update(key Key) bool {
 	return true
 }
 
-func (r *real) Info(s string) (Info, bool) {
+func (r *real) Info(s string) (Info, error) {
 	r.mtx.RLock()
 	defer r.mtx.RUnlock()
 
 	hashRing, ok := r.hashRings[s]
 	if !ok {
-		return Info{}, false
+		return Info{}, ErrNoHashRingFound
+	}
+
+	checksum, err := hashRing.Checksum()
+	if err != nil {
+		return Info{}, err
 	}
 
 	hashes := make(map[string]string)
@@ -101,7 +113,7 @@ func (r *real) Info(s string) (Info, bool) {
 		hashes[hash] = addr
 		return nil
 	}); err != nil {
-		return Info{}, false
+		return Info{}, err
 	}
 
 	keys := make(map[string][]Key)
@@ -112,9 +124,27 @@ func (r *real) Info(s string) (Info, bool) {
 	}
 
 	return Info{
-		Hashes: hashes,
-		Keys:   keys,
-	}, true
+		Checksum: fmt.Sprintf("%08x", checksum),
+		Hashes:   hashes,
+		Keys:     keys,
+	}, nil
+}
+
+func (r *real) Checksum(s string) (string, error) {
+	r.mtx.RLock()
+	defer r.mtx.RUnlock()
+
+	hashRing, ok := r.hashRings[s]
+	if !ok {
+		return "", ErrNoHashRingFound
+	}
+
+	checksum, err := hashRing.Checksum()
+	if err != nil {
+		return "", err
+	}
+
+	return fmt.Sprintf("%08x", checksum), nil
 }
 
 func (r *real) getKeysByAddress(addr string) (res []Key) {
