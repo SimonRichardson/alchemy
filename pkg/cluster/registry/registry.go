@@ -33,6 +33,13 @@ type Registry interface {
 	// Returns true if the key was updated to the registry
 	Update(Key) bool
 
+	// Locate attempts to locate a key depending on the value of the string
+	// passed in. The string doesn't represent the hash, but potentially a path
+	// or address that will return the same key if the underlying storage is
+	// stable.
+	// Returns true if the key was located or not from the registry
+	Locate(string) (Key, bool)
+
 	// Info returns back the information for a particular key type
 	// Returns an error if it can't gather the information about a specific key
 	// type

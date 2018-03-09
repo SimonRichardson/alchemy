@@ -25,7 +25,7 @@ type real struct {
 func New(hashFn func([]byte) uint32, replicationFactor int) Registry {
 	return &real{
 		hashRings:         make(map[string]*hashring.HashRing),
-		keys:              make(map[string]map[string]Key),
+		keys:              make(map[string]Key),
 		hashFn:            hashFn,
 		replicationFactor: replicationFactor,
 	}
@@ -40,16 +40,12 @@ func (r *real) Add(key Key) bool {
 		r.hashRings[keyType] = hashring.New(r.hashFn, r.replicationFactor)
 	}
 
-	var (
-		addr = key.Address()
-		res  = r.hashRings[keyType].Add(addr)
-	)
-	if _, ok := r.keys[addr]; !ok {
-		r.keys[addr] = make(map[string]Key)
+	if r.hashRings[keyType].Add(key.Address()) {
+		r.keys[key.Name()] = key
+		return true
 	}
-	r.keys[addr][key.Name()] = key
 
-	return res
+	return false
 }
 
 func (r *real) Remove(key Key) bool {
@@ -92,6 +88,17 @@ func (r *real) Update(key Key) bool {
 	r.keys[addr][name] = key
 
 	return true
+}
+
+func (r *real) Locate(keyType string, val string) (Key, bool) {
+	r.mtx.RLock()
+	defer r.mtx.RUnlock()
+
+	if ring, ok := r.hashRings[keyType]; ok {
+		if addr, ok := ring.Lookup(val); ok {
+			r.keys[addr]
+		}
+	}
 }
 
 func (r *real) Info(s string) (Info, error) {
